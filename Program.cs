@@ -1,10 +1,10 @@
-﻿using ProjectEarth_Data_Editor.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using SystemPlus;
 using SystemPlus.Extensions;
@@ -16,7 +16,7 @@ namespace ProjectEarth_Data_Editor
         static void Main(string[] args)
         {
             string from = @"C:\Users\Tomas\Desktop\Project Earth\Api\data\buildplates\_plates";
-            string to = @"C:\Users\Tomas\Desktop\Project Earth\Api\data\buildplates\plates\";
+            string to = @"C:\Users\Tomas\Desktop\Project Earth\Api\data\buildplates\__plates\";
 
             string[] files = Directory.GetFiles(from);
             ParallelOptions options = new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount, };
@@ -39,12 +39,14 @@ namespace ProjectEarth_Data_Editor
                 Stopwatch watch = new Stopwatch();
                 watch.Start();
                 try {
-                    JsonObject converted = Converter.SharedToNormal(JsonSerializer.Deserialize(File.ReadAllText(files[i])));
-                    File.WriteAllText(to + converted["id"] + ".json", JsonSerializer.Serialize(converted, JsonSerializationSettings.Default));
+                    Json.SharedBuildPlate sbp = JsonSerializer.Deserialize<Json.SharedBuildPlate>(File.ReadAllText(files[i]),
+                        new JsonSerializerOptions() { AllowTrailingCommas = true });
+                    Json.BuildPlate bp = Converter.SharedToNormal(sbp);
+                    File.WriteAllText(to + bp.id.ToString() + ".json", JsonSerializer.Serialize<Json.BuildPlate>(bp));
                     done++;
                     watch.Stop();
                     times.Add((float)watch.Elapsed.TotalSeconds);
-                } catch { skipped++; }
+                } catch (Exception e) { skipped++; }
                 watch.Stop();
                 converting--;
                 lock (lockObj)
