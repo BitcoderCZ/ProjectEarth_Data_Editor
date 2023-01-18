@@ -80,6 +80,8 @@ namespace ProjectEarth_Data_Editor
 
         public void Load()
         {
+            if (!File.Exists(Path + "buildplates.json"))
+                SaveJson(Path + "buildplates.json", new BuildPlate());
             buildPlate = LoadJson<BuildPlate>(Path + "buildplates.json");
         }
 
@@ -93,6 +95,12 @@ namespace ProjectEarth_Data_Editor
         {
             public List<string> UnlockedBuildplates { get; set; }
             public List<string> LockedBuildplates { get; set; }
+
+            public BuildPlate()
+            {
+                UnlockedBuildplates = new List<string>();
+                LockedBuildplates = new List<string>();
+            }
         }
     }
 }

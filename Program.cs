@@ -42,7 +42,29 @@ namespace ProjectEarth_Data_Editor
             if (!Directory.Exists(apiDir) || !Directory.Exists(apiDir + "data"))
                 return;
 
+            RunUI();
+        }
+
+        private static void RunUI()
+        {
+#if DEBUG
             UI.Run(apiDir);
+#else
+            start:
+            try {
+                UI.Run(apiDir);
+            }
+            catch (Exception e) {
+                Console.WriteLine($"Exception occured:\n" +
+                    $"Type: {e.GetType()}\n" +
+                    $"Message: {e.Message}\n" +
+                    $"Stack Trace. {e.StackTrace}");
+                Console.WriteLine("Press any key to continue...");
+                Console.ReadKey(true);
+                Console.Clear();
+                goto start;
+            }
+#endif
         }
     }
 }

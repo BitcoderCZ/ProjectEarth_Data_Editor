@@ -30,14 +30,15 @@ namespace ProjectEarth_Data_Editor
             },
             { 
                 new SMenu("Player", LastVal.Back, new IMenuAction[,] 
-            { 
-                { new SMenu("Player/Build plate", LastVal.Back, new IMenuAction[,] 
-                    {
-                        { new SAction(Player_BuildPlate_Add) },
-                        { new SAction(Player_BuildPlate_Remove) },
-                        { new SAction(Player_BuildPlate_List) },
-                    }, "Add", "Remove", "List")  } 
-                }, "Build plate") 
+                { 
+                    { new SMenu("Player/Build plate", LastVal.Back, new IMenuAction[,] 
+                        {
+                            { new SAction(Player_BuildPlate_Add) },
+                            { new SAction(Player_BuildPlate_Remove) },
+                            { new SAction(Player_BuildPlate_List) },
+                        }, "Add", "Remove", "List")  
+                    } 
+                }, "Build plate")
             },
             { 
                 new SAction(ServerConfig)
@@ -139,7 +140,7 @@ namespace ProjectEarth_Data_Editor
             MenuSettings s = new MenuSettings("ServerConfig".ToBIG(), new IMenuSettingsItem[]
                 {
                     new MSIStringValue("BaseServerIP", config["baseServerIP"].ToString(), 28),
-                    new MSIBool("UseBaseServerIP", bool.Parse(config["useBaseServerIP"].ToString())) { dispType = MSIBool.Checkmark },
+                    new MSIBool("UseBaseServerIP", bool.Parse(config["useBaseServerIP"].ToString())) { dispType = MSIBool.YesNo },
                     new MSIStringValue("TileServerUrl", config["tileServerUrl"].ToString(), 28),
                     new MSIIntSlider("MixTappableSpawnAmount", int.Parse(config["mixTappableSpawnAmount"].ToString()), 0, 100),
                     new MSIIntSlider("MaxTappableSpawnAmount", int.Parse(config["maxTappableSpawnAmount"].ToString()), 0, 100),
@@ -154,7 +155,7 @@ namespace ProjectEarth_Data_Editor
                 config["tileServerUrl"] = s.lastValues[2].GetValue();
                 config["mixTappableSpawnAmount"] = s.lastValues[3].GetValue();
                 config["maxTappableSpawnAmount"] = s.lastValues[4].GetValue();
-                config["tappableSpawnRadius"] = s.lastValues[5].GetValue();
+                config["tappableSpawnRadius"] = ((float)s.lastValues[5].GetValue()).ToString(CultureInfo.InvariantCulture);
                 File.WriteAllText(apiDir + "data\\config\\apiconfig.json", JsonSerializer.Serialize(config, JsonSerializationSettings.Default));
             }
             return MenuResult.Back;
